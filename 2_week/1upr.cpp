@@ -3,11 +3,15 @@
 
 bool prime(int a) {
     bool prime = true;
-    for (int k = 2; k < a; ++k) {
-        if (a % k == 0) {
-            prime = false;
+    if (a >= 1) {
+        for (int k = 2; k < a; ++k) {
+            if (a % k == 0) {
+                prime = false;
+            }
         }
     }
+    else
+        prime = false;
     return prime;
 }
 
@@ -22,7 +26,7 @@ int number(long a) {
     return b;
 }
 
-bool palindrome(int a) {
+bool palindrome(long a) {
     int num;
     bool pol = true;
     num = number(a);
