@@ -45,10 +45,9 @@ bool palindrome(long a) {
 }
 
 int main() {
-    int n;
+    int n, a;
     std::cin >> n;
     for (int i = 0; i < n; ++i) {
-        int a;
         std::cin >> a;
 
         std::cout << "prime = " << prime(a) << " " <<"palindrome = "<< palindrome(a) <<std::endl;
