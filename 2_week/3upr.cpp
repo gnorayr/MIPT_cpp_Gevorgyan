@@ -13,19 +13,17 @@ int number(long a) {
 }
 
 
-void reverse(int &a)
-{
+void reverse(int &a) {
     int num, b = 0;
     num = number(a);
-    for (int i = 0; i < num; ++i)
-    {
-       b += a % 10 * pow(10, num - i - 1);
-       a /= 10;
+    for (int i = 0; i < num; ++i) {
+        b += a % 10 * pow(10, num - i - 1);
+        a /= 10;
     }
     a = b;
 }
-int main()
-{
+
+int main() {
     int a;
     std::cin >> a;
     reverse(a);
