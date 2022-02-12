@@ -1,33 +1,21 @@
 #include <iostream>
 
 int main() {
-    int n, j;
-    char a;
+    int n;
     std::cin >> n;
-    j = n;
-    for (int k = 0; k < n; ++k) {
-        for (int i = 0; i < j; ++i) {
-            a = 'A' + i;
-            std::cout << a;
+    for (int k = n; k >= 1; --k) {
+        for (char x = 'a'; x < 'a' + n; ++x) {
+            if (x < 'a' + k)
+                std::cout << x;
+            else
+                std::cout << ' ' << ' ';
         }
-        if (j <= n - 1) {
-            std::cout << ' ' << ' ';
-        }
-        if (j < n - 1)
-            for (int p = 0; p < 4 * (k - 1); ++p)
-                std::cout << ' ';
-        if (j == n) {
-            for (int i = 1; i < j; ++i) {
-                --a;
-                std::cout << a;
-            }
-        } else {
-            for (int i = 1; i < j + 1; ++i) {
-                std::cout << a;
-                --a;
-            }
+        for (char x = 'a' + n - 2; x >= 'a'; --x) {
+            if (x < 'a' + k)
+                std::cout << x;
+            else
+                std::cout << ' ' << ' ';
         }
         std::cout << '\n';
-        j--;
     }
 }
