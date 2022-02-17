@@ -9,8 +9,7 @@ bool prime(int a) {
                 prime = false;
             }
         }
-    }
-    else
+    } else
         prime = false;
     return prime;
 }
@@ -50,7 +49,7 @@ int main() {
     for (int i = 0; i < n; ++i) {
         std::cin >> a;
 
-        std::cout << "prime = " << prime(a) << " " <<"palindrome = "<< palindrome(a) <<std::endl;
+        std::cout << "prime = " << prime(a) << " " << "palindrome = " << palindrome(a) << std::endl;
 
     }
 }
