@@ -3,10 +3,10 @@
 #include <random>
 
 
-const int n = 5;
-const int m = 5;
+const int n = 7;
+const int m = 7;
 std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
-int num = 1;
+int num = 10;
 
 
 void matrix(int a[n][m]) {
@@ -16,15 +16,9 @@ void matrix(int a[n][m]) {
         std::uniform_int_distribution<int> distm(0, m - 1);
         int x = distn(rng);
         int y = distm(rng);
+        if (a[x][y] == 0)
+            ++number;
         a[x][y] = 1;
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < m; ++j) {
-                if (a[i][j] == 1)
-                    ++number;
-            }
-        }
-        if (number != num)
-            number = 0;
     }
 }
 
@@ -106,7 +100,6 @@ int main() {
     int b[n][m] = {};
     matrix(a);
     while (true) {
-        ++step;
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < m; ++j) {
                 b[i][j] = a[i][j];
@@ -124,8 +117,8 @@ int main() {
         }
         if (coincidence == m * n)
             break;
-        else
-            coincidence = 0;
+        coincidence = 0;
+        ++step;
     }
-    std::cout << "steps =" << " "<< step << " ";
+    std::cout << "steps =" << " " << step << " ";
 }
