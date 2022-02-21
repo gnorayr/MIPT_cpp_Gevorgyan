@@ -2,14 +2,12 @@
 #include <iostream>
 #include <random>
 
-
-const int n = 7;
-const int m = 7;
+const int n = 10;
+const int m = 10;
 std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
-int num = 10;
+int num = 7;
 
-
-void matrix(int a[n][m]) {
+void generateMatrix(int a[n][m]) {
     int number = 0;
     while (number != num) {
         std::uniform_int_distribution<int> distn(0, n - 1);
@@ -23,21 +21,14 @@ void matrix(int a[n][m]) {
 }
 
 void move(int a[n][m]) {
+    const int di[] = {0, 0, 1, -1};
+    const int dj[] = {1, -1, 0, 0};
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
-            if (a[i][j] == 0) {
+            if (a[i][j] == 0 || j == 0 || j == m - 1)
                 continue;
-            }
-            if (j == 0 || j == m - 1) {
-                continue;
-            }
             if (n != 1) {
-                if (i == 0 || i == n - 1) {
-                    continue;
-                }
-            }
-            if (n != 1) {
-                if (a[i + 1][j] == 1 || a[i - 1][j] == 1)
+                if (i == 0 || i == n - 1 || a[i + 1][j] == 1 || a[i - 1][j] == 1)
                     continue;
             }
             if (a[i][j + 1] == 1 || a[i][j - 1] == 1)
@@ -48,37 +39,14 @@ void move(int a[n][m]) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
             if (a[i][j] == 2) {
-                std::uniform_int_distribution<int> dist(0, 3);
-                std::uniform_int_distribution<int> dist_1(0, 1);
-                if (n != 1) {
-                    int random = dist(rng);
-                    if (random == 0 && a[i + 1][j] != 1) {
-                        a[i][j] = 0;
-                        a[i + 1][j] = 1;
-                    }
-                    if (random == 1 && a[i - 1][j] != 1) {
-                        a[i][j] = 0;
-                        a[i - 1][j] = 1;
-                    }
-                    if (random == 2 && a[i][j + 1] != 1) {
-                        a[i][j] = 0;
-                        a[i][j + 1] = 1;
-                    }
-                    if (random == 3 && a[i][j - 1] != 1) {
-                        a[i][j] = 0;
-                        a[i][j - 1] = 1;
-                    }
-                } else {
-                    int random = dist_1(rng);
-                    if (random == 0 && a[i][j + 1] != 1) {
-                        a[i][j] = 0;
-                        a[i][j + 1] = 1;
-                    }
-                    if (random == 1 && a[i][j - 1] != 1) {
-                        a[i][j] = 0;
-                        a[i][j - 1] = 1;
-                    }
-
+                std::uniform_int_distribution<int> gen(0, 3);
+                std::uniform_int_distribution<int> gen_1(0, 1);
+                int direction = (n == 1 ? gen_1 : gen)(rng);
+                int newi = i + di[direction];
+                int newj = j + dj[direction];
+                if (a[newi][newj] == 0) {
+                    a[i][j] = 0;
+                    a[newi][newj] = 1;
                 }
             }
         }
@@ -89,16 +57,14 @@ void move(int a[n][m]) {
                 a[i][j] = 1;
         }
     }
-
 }
 
-
 int main() {
-    int step = 0;
-    int coincidence = 0;
+    int steps = 0;
     int a[n][m] = {};
     int b[n][m] = {};
-    matrix(a);
+    generateMatrix(a);
+    //Breaks when all particles are dead.
     while (true) {
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < m; ++j) {
@@ -107,18 +73,16 @@ int main() {
             }
             std::cout << std::endl;
         }
-        move(a);
         std::cout << std::endl;
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < m; ++j) {
-                if (a[i][j] == b[i][j])
-                    ++coincidence;
-            }
-        }
-        if (coincidence == m * n)
+        move(a);
+        bool areDifferent = false;
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j)
+                if (a[i][j] != b[i][j])
+                    areDifferent = true;
+        if (!areDifferent)
             break;
-        coincidence = 0;
-        ++step;
+        ++steps;
     }
-    std::cout << "steps =" << " " << step << " ";
+    std::cout << "steps =" << " " << steps << " ";
 }
