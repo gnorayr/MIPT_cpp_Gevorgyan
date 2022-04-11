@@ -6,7 +6,7 @@ struct Node {
     Node *prev;
 };
 
-struct List {
+struct DoubleList {
     unsigned size;
     Node *head;
     Node *tail;
@@ -16,7 +16,7 @@ Node *createNode(int value) {
     return new Node{value, nullptr, nullptr};
 }
 
-Node *ith_node(List *list, unsigned idx) {
+Node *ith_node(DoubleList *list, unsigned idx) {
     Node *node = list->head;
     for (int i = 0; i < idx; ++i) {
         node = node->next;
@@ -24,7 +24,7 @@ Node *ith_node(List *list, unsigned idx) {
     return node;
 }
 
-void push_back(List *list, int new_val) {
+void push_back(DoubleList *list, int new_val) {
     Node *new_node = createNode(new_val);
     if (list->size != 0) {
         list->tail->next = new_node;
@@ -37,7 +37,7 @@ void push_back(List *list, int new_val) {
     list->size++;
 }
 
-void push_front(List *list, int new_val) {
+void push_front(DoubleList *list, int new_val) {
     Node *new_node = createNode(new_val);
     if (list->size != 0) {
         new_node->next = list->head;
@@ -50,15 +50,15 @@ void push_front(List *list, int new_val) {
     list->size++;
 }
 
-List *createList(unsigned size) {
-    List *tmp = new List{0, nullptr, nullptr};
+DoubleList *createList(unsigned size) {
+    DoubleList *tmp = new DoubleList{0, nullptr, nullptr};
     for (int i = 0; i < size; ++i) {
         push_back(tmp, 0);
     }
     return tmp;
 }
 
-void insert(List *list, unsigned idx, int new_val) {
+void insert(DoubleList *list, unsigned idx, int new_val) {
     Node *new_node = createNode(new_val);
     if (idx == list->size - 1) {
         push_back(list, new_val);
@@ -73,7 +73,7 @@ void insert(List *list, unsigned idx, int new_val) {
     list->size++;
 }
 
-int pop_back(List *list) {
+int pop_back(DoubleList *list) {
 
     int tail_val = list->tail->val;
     delete list->tail;
@@ -90,7 +90,7 @@ int pop_back(List *list) {
     return tail_val;
 }
 
-int pop_front(List *list) {
+int pop_front(DoubleList *list) {
     int head_val = list->head->val;
     Node *new_head = list->head->next;
     delete list->head;
@@ -106,7 +106,7 @@ int pop_front(List *list) {
     return head_val;
 }
 
-int remove(List *list, unsigned idx) {
+int remove(DoubleList *list, unsigned idx) {
     if (idx == 0)
         return pop_front(list);
     if (idx == list->size - 1)
@@ -123,16 +123,16 @@ int remove(List *list, unsigned idx) {
 
 }
 
-unsigned length(List *list) {
+unsigned length(DoubleList *list) {
     return list->size;
 }
 
-int get(List *list, unsigned idx) {
+int get(DoubleList *list, unsigned idx) {
     return ith_node(list, idx)->val;
 }
 
 
-void print(List *list) {
+void print(DoubleList *list) {
     if (list->size != 0) {
         for (int idx = 0; idx < list->size; ++idx) {
             std::cout << ith_node(list, idx)->val << " ";
@@ -142,7 +142,7 @@ void print(List *list) {
         std::cout << "list is empty" << std::endl;
 }
 
-void printReverse(List *list) {
+void printReverse(DoubleList *list) {
     if (list->size != 0) {
         Node *node = list->tail;
         for (int idx = 0; idx < list->size; ++idx) {
@@ -154,14 +154,14 @@ void printReverse(List *list) {
         std::cout << "list is empty" << std::endl;
 }
 
-void clear(List *list) {
+void clear(DoubleList *list) {
     for (unsigned i = list->size; i > 0; --i) {
         pop_back(list);
     }
 }
 
 int main() {
-    List list1 = *createList(2);
+    DoubleList list1 = *createList(2);
     print(&list1);
     printReverse(&list1);
 }
