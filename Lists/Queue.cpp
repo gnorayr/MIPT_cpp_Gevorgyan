@@ -53,10 +53,14 @@ int deQueue(Queue *list) {
 }
 
 int front(Queue *queue) {
+    if (queue->size == 0)
+        return 0;
     return queue->head->val;
 }
 
 int rear(Queue *queue) {
+    if (queue->size == 0)
+        return 0;
     return queue->tail->val;
 }
 

@@ -36,7 +36,10 @@ void push(Stack *list, int new_val) {
 }
 
 int pop(Stack *list) {
-
+    if (list->size == 0) {
+        std::cout << "WRONG" << std::endl;
+        return 0;
+    }
     int tail_val = list->tail->val;
     delete list->tail;
 
@@ -53,6 +56,8 @@ int pop(Stack *list) {
 }
 
 int top(Stack *list) {
+    if (list->size == 0)
+        return 0;
     return list->tail->val;
 }
 

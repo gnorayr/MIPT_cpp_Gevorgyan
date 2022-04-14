@@ -16,6 +16,8 @@ Node *createNode(int value) {
 }
 
 Node *ith_node(List *list, unsigned idx) {
+    if(idx < 0 || idx >= list->size)
+        return nullptr;
     Node *node = list->head;
     for (int i = 0; i < idx; ++i) {
         node = node->next;
@@ -50,12 +52,22 @@ void push_front(List *list, int new_val) {
 List *createList(unsigned size) {
     List *tmp = new List{0, nullptr, nullptr};
     for (int i = 0; i < size; ++i) {
-        push_back(tmp, 0);
+        push_back(tmp, i);
     }
     return tmp;
 }
 
 void insert(List *list, unsigned idx, int new_val) {
+   if (idx != 0) {
+       if (idx < 0 || idx >= list->size) {
+           std::cout << "WRONG" << std::endl;
+           return;
+       }
+   }
+    if (idx == 0) {
+        push_front(list, new_val);
+        return;
+    }
     Node *node = ith_node(list, idx);
     Node *next_node = node->next;
     Node *new_node = createNode(new_val);
@@ -68,7 +80,10 @@ void insert(List *list, unsigned idx, int new_val) {
 }
 
 int pop_back(List *list) {
-
+    if (list->size == 0) {
+        std::cout << "WRONG" << std::endl;
+        return 0;
+    }
     int tail_val = list->tail->val;
     delete list->tail;
 
@@ -85,6 +100,10 @@ int pop_back(List *list) {
 }
 
 int pop_front(List *list) {
+    if (list->size == 0) {
+        std::cout << "WRONG" << std::endl;
+        return 0;
+    }
     int head_val = list->head->val;
     Node *new_head = list->head->next;
     delete list->head;
@@ -119,6 +138,10 @@ unsigned length(List *list) {
 }
 
 int get(List *list, unsigned idx) {
+    if (ith_node(list, idx) == nullptr) {
+        std::cout << "WRONG" << std::endl;
+        return 0;
+    }
     return ith_node(list, idx)->val;
 }
 
@@ -135,11 +158,13 @@ void print(List *list) {
 
 void clear(List *list) {
     for (unsigned i = list->size; i > 0; --i) {
-        pop_back(list);
+        pop_front(list);
     }
 }
 
 int main() {
-    List list1 = *createList(2);
+    List list1 = *createList(0);
+    //pop_front(&list1);
+    //insert(&list1, 0, 10);
     print(&list1);
 }

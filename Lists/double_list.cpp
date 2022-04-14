@@ -17,6 +17,8 @@ Node *createNode(int value) {
 }
 
 Node *ith_node(DoubleList *list, unsigned idx) {
+    if(idx < 0 || idx >= list->size)
+        return nullptr;
     Node *node = list->head;
     for (int i = 0; i < idx; ++i) {
         node = node->next;
@@ -51,14 +53,24 @@ void push_front(DoubleList *list, int new_val) {
 }
 
 DoubleList *createList(unsigned size) {
-    DoubleList *tmp = new DoubleList{0, nullptr, nullptr};
+    auto *tmp = new DoubleList{0, nullptr, nullptr};
     for (int i = 0; i < size; ++i) {
-        push_back(tmp, 0);
+        push_back(tmp, i);
     }
     return tmp;
 }
 
 void insert(DoubleList *list, unsigned idx, int new_val) {
+    if (idx != 0) {
+        if (idx < 0 || idx >= list->size) {
+            std::cout << "I can't do it" << std::endl;
+            return;
+        }
+    }
+    if (idx == 0) {
+        push_front(list, new_val);
+        return;
+    }
     Node *new_node = createNode(new_val);
     if (idx == list->size - 1) {
         push_back(list, new_val);
@@ -74,6 +86,10 @@ void insert(DoubleList *list, unsigned idx, int new_val) {
 }
 
 int pop_back(DoubleList *list) {
+    if (list->size == 0) {
+        std::cout << "I can't do it" << std::endl;
+        return 0;
+    }
 
     int tail_val = list->tail->val;
     delete list->tail;
@@ -91,6 +107,11 @@ int pop_back(DoubleList *list) {
 }
 
 int pop_front(DoubleList *list) {
+    if (list->size == 0) {
+        std::cout << "I can't do it" << std::endl;
+        return 0;
+    }
+
     int head_val = list->head->val;
     Node *new_head = list->head->next;
     delete list->head;
@@ -128,6 +149,10 @@ unsigned length(DoubleList *list) {
 }
 
 int get(DoubleList *list, unsigned idx) {
+    if (ith_node(list, idx) == nullptr) {
+        std::cout << "I can't do it" << std::endl;
+        return 0;
+    }
     return ith_node(list, idx)->val;
 }
 
@@ -161,7 +186,10 @@ void clear(DoubleList *list) {
 }
 
 int main() {
-    DoubleList list1 = *createList(2);
+    DoubleList list1 = *createList(0);
     print(&list1);
+    pop_back(&list1);
+    printReverse(&list1);
+    clear(&list1);
     printReverse(&list1);
 }
