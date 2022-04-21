@@ -2,10 +2,12 @@
 #include <iostream>
 #include <random>
 
-const int n = 10;
+const int n = 1;
 const int m = 10;
 std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
-int num = 7;
+int num = 1;
+const int di[] = {0, 0, 1, -1};
+const int dj[] = {1, -1, 0, 0};
 
 void generateMatrix(int a[n][m]) {
     int number = 0;
@@ -20,22 +22,30 @@ void generateMatrix(int a[n][m]) {
     }
 }
 
-void move(int a[n][m]) {
-    const int di[] = {0, 0, 1, -1};
-    const int dj[] = {1, -1, 0, 0};
+
+bool alive_balls(int a[n][m]) {
+    bool all_dead = false;
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
             if (a[i][j] == 0 || j == 0 || j == m - 1)
                 continue;
             if (n != 1) {
-                if (i == 0 || i == n - 1 || a[i + 1][j] == 1 || a[i - 1][j] == 1)
+                if (i == 0 || i == n - 1 || a[i + 1][j] != 0 || a[i - 1][j] == 1)
                     continue;
             }
             if (a[i][j + 1] == 1 || a[i][j - 1] == 1)
                 continue;
             a[i][j] = 2;
+            all_dead = true;
         }
     }
+    return all_dead;
+}
+
+
+void move(int a[n][m]) {
+
+
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
             if (a[i][j] == 2) {
@@ -62,26 +72,20 @@ void move(int a[n][m]) {
 int main() {
     int steps = 0;
     int a[n][m] = {};
-    int b[n][m] = {};
     generateMatrix(a);
     //Breaks when all particles are dead.
-    while (true) {
+    alive_balls(a);
+    while (alive_balls(a)) {
+        alive_balls(a);
+        move(a);
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < m; ++j) {
-                b[i][j] = a[i][j];
                 std::cout << a[i][j] << " ";
             }
             std::cout << std::endl;
         }
         std::cout << std::endl;
-        move(a);
-        bool areDifferent = false;
-        for (int i = 0; i < n; ++i)
-            for (int j = 0; j < m; ++j)
-                if (a[i][j] != b[i][j])
-                    areDifferent = true;
-        if (!areDifferent)
-            break;
+
         ++steps;
     }
     std::cout << "steps =" << " " << steps << " ";
