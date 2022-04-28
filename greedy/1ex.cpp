@@ -23,7 +23,7 @@ int main() {
     int sum = 0;
     int w = 0;
     for (int i = 0; i < n; ++i) {
-        if (sum + array[i] < s) {
+        if (sum + array[i] <= s) {
             sum += array[i];
             ++w;
         } else
