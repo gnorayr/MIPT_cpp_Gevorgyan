@@ -29,8 +29,9 @@ int main() {
             else {
                 location = petrol[i - 1];
                 ++stop;
-                if (petrol[i] - location > k)
-                    break;
+                if (petrol[i] - location > k) {
+                    stop = -1;
+                    break; }
                 --i;
                 has_enough_fuel = false;
             }
