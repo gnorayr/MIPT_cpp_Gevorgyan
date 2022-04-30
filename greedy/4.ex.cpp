@@ -26,7 +26,7 @@ denom_array_t egyptian_fractions(int num, int den) {
                 }
                 delete[] array;
                 array = newArr;
-                newArr = NULL;
+                newArr = nullptr;
                 num = l * num - den;
                 den *= l;
                 break;
@@ -42,7 +42,7 @@ denom_array_t egyptian_fractions(int num, int den) {
 
 
 int main() {
-    auto a = egyptian_fractions(1, 2);
+    auto a = egyptian_fractions(5, 121);
     std::cout << "size = " << a.sz << std::endl;
     for (int i = 0 ; i < a.sz; ++i) {
         std::cout << a.arr[i]  << " ";

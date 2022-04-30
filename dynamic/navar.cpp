@@ -1,7 +1,7 @@
 #include <iostream>
 
 int const number = 10;
-int const L_0 = 97;
+int const L_0 = ;
 
 int navar(int length[number], int price[number], int * optimals, int l_0 = L_0, int max = 1) {
     if (l_0 == 0)
