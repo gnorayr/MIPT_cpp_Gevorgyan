@@ -1,45 +1,30 @@
 #include <iostream>
 #include <cmath>
 
-int minimum(int size, int const *list) {
-    int min = list[0];
-    for (int i = 0; i < size; ++i) {
-        if (list[i] < min) {
-            min = list[i];
-        }
-    }
-    return min;
-}
-
-int energy(int n, int *coordinate, int *memoization) {
+int energy(int n, int *coordinate, int *cache) {
     if (n < 2) {
         return 0;
     }
     if (n == 2) {
         return abs(coordinate[1] - coordinate[0]);
     }
-    if (memoization[n] != 0) {
-        return memoization[n];
+    if (cache[n] != 0) {
+        return cache[n];
     }
     int cases[2];
-    cases[0] = energy(n - 1, coordinate, memoization) + abs(coordinate[n - 2] - coordinate[n - 1]);
-    cases[1] = energy(n - 2, coordinate, memoization) + 3 * abs(coordinate[n - 3] - coordinate[n - 1]);
-    int min = minimum(2, cases);
-    memoization[n] = min;
-    return min;
+    cases[0] = energy(n - 1, coordinate, cache) + abs(coordinate[n - 2] - coordinate[n - 1]);
+    cases[1] = energy(n - 2, coordinate, cache) + 3 * abs(coordinate[n - 3] - coordinate[n - 1]);
+    return cache[n] = std::min(cases[0], cases[1]);
 }
-
 
 int main() {
     int n;
     std::cin >> n;
     int coordinate[n];
-    int y;
     for (int i = 0; i < n; ++i) {
-        std::cin >> y;
-        coordinate[i] = y;
+        std::cin >> coordinate[i];
     }
-    int *memoization = new int[n+1]{0};
-    std::cout << energy(n, coordinate, memoization);
-    delete []memoization;
+    int *cache = new int[n+1]{0};
+    std::cout << energy(n, coordinate, cache);
+    delete[] cache;
 }
