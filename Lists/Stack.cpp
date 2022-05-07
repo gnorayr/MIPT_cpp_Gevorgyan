@@ -35,22 +35,22 @@ void push(Stack *list, int new_val) {
     list->size++;
 }
 
-int pop(Stack *list) {
-    if (list->size == 0) {
+int pop(Stack *stack) {
+    if (stack->size == 0) {
         std::cout << "WRONG" << std::endl;
         return 0;
     }
-    int tail_val = list->tail->val;
-    delete list->tail;
+    int tail_val = stack->tail->val;
+    delete stack->tail;
 
-    list->size--;
-    if (list->size != 0) {
-        Node *new_tail = ith_node(list, list->size - 1);
-        list->tail = new_tail;
+    stack->size--;
+    if (stack->size != 0) {
+        Node *new_tail = ith_node(stack, stack->size - 1);
+        stack->tail = new_tail;
         new_tail->next = nullptr;
     } else {
-        list->head = nullptr;
-        list->tail = nullptr;
+        stack->head = nullptr;
+        stack->tail = nullptr;
     }
     return tail_val;
 }
@@ -61,7 +61,7 @@ int top(Stack *list) {
     return list->tail->val;
 }
 
-bool empty ( Stack * stack ) {
+bool empty ( Stack *stack ) {
     return stack->size == 0;
 }
 
@@ -82,7 +82,7 @@ void clear(Stack *list) {
     }
 }
 
-Stack *createList(unsigned size) {
+Stack *createStack(unsigned size) {
     Stack *tmp = new Stack{0, nullptr, nullptr};
     for (int i = 0; i < size; ++i) {
         push(tmp, 0);
@@ -91,6 +91,6 @@ Stack *createList(unsigned size) {
 }
 
 int main() {
-    Stack list1 = *createList(2);
+    Stack list1 = *createStack(2);
     print(&list1);
 }
