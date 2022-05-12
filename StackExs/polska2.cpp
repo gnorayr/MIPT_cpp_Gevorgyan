@@ -171,7 +171,13 @@ int main() {
             push(&first_operand, false);
         }
         if (arr[i] >= '0' and arr[i] <= '9') {
-            int b = atoi(arr + i);
+            int b;
+            if (i == 0)
+                b = atoi(arr + i);
+            else if (arr[i - 1] != '~')
+                b = atoi(arr + i);
+            else if (arr[i - 1] == '~')
+                b = -atoi(arr + i);
             i += digitCount(b) - 1;
             while (signs.size != 0 and first_operand.tail->val) {
                 int a = pop(&numbers);

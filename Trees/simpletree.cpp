@@ -99,13 +99,20 @@ SimpleTree<DataType> *createTree(ListNode<DataType> *root) {
     return new SimpleTree<DataType>{root};
 }
 
+template<typename  DataType>
+void print(ListNode<DataType> *root) {
+    std::cout << root->key << " ";
+    if (root->left != nullptr)
+        print<DataType>(root->left);
+    if (root->right != nullptr)
+        print<DataType>(root->right);
+}
+
 int main() {
     SimpleTree<int> *a = createTree<int>(nullptr);
     for (int i = 10; i > 0; --i) {
         insert<int>(a, createNode(i, 1));
     }
-    std::cout << a->root->left->left->key;
-    remove<int>(a, search<int>(a->root, 8));
-    std::cout << a->root->left->key;
-    std::cout << a->root->left->left->key;
+    remove<int>(a, a->root);
+    print(a->root);
 }
