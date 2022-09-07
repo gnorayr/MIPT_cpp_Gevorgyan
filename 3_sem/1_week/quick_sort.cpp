@@ -1,8 +1,6 @@
 #include <chrono>
 #include <iostream>
 #include <random>
-#include <cstdlib>
-#include <cstddef>
 
 const int n = 17;
 int array[n] = {};
