@@ -6,30 +6,24 @@ const int n = 17;
 int array[n] = {};
 std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 
-void generate_massive(int (&arr)[n]) {
-    std::uniform_int_distribution<int> dist(0, 100);
+void generate_array(int (&arr)[n]) {
+    std::uniform_int_distribution<int> distrib(0, 100);
     for (int & i : arr) {
-        int x = dist(rng);
+        int x = distrib(rng);
         i = x;
     }
 }
 
-void generic_swap(void *lha, void *rha, std::size_t element_byte_size) {
+void generic_swap(void *lhs, void *rhs, std::size_t element_byte_size) {
     void *tmp = malloc(element_byte_size);
-    memcpy(tmp, lha, element_byte_size);
-    memcpy(lha, rha, element_byte_size);
-    memcpy(rha, tmp, element_byte_size);
+    memcpy(tmp, lhs, element_byte_size);
+    memcpy(lhs, rhs, element_byte_size);
+    memcpy(rhs, tmp, element_byte_size);
     free(tmp);
 }
 
 int list_size(void *begin, void *end, std::size_t element_byte_size) {
-    int num = 1;
-    auto curr = begin;
-    while (curr != end) {
-        curr = (void*)((std::size_t)curr + element_byte_size);
-        ++num;
-    }
-    return num;
+    return (std::size_t(end) - std::size_t(begin)) / element_byte_size;
 }
 
 bool less(void *a, void *b) {
@@ -69,7 +63,7 @@ void generic_qsort(void *begin, std::size_t elem_byte_size, int l, int r, bool (
 }
 
 int main() {
-    generate_massive(array);
+    generate_array(array);
     for (int i : array) {
         std::cout << i << " ";
     }
