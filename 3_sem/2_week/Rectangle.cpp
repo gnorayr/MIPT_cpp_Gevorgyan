@@ -2,9 +2,8 @@
 #include <cmath>
 #include <stack>
 
-
 struct Point {
-    unsigned long long const x, y;
+    unsigned long long x, y;
 
     Point(unsigned long long x, unsigned long long y) :
             x(x), y(y) {}
@@ -33,28 +32,33 @@ struct Point {
 
 class Rectangle {
 private:
-    Point *rha;
+    Point rha;
 public:
-    Rectangle() : rha((new Point(0, 0))) {}
+    Rectangle() : rha((Point(0, 0))) {}
 
-    Rectangle(Point &rha) : rha(&rha) {}
+    Rectangle(const Point &rha) : rha(rha) {}
+
+    Rectangle(int x, int y): Rectangle(Point(x, y)) {}
+
+    Rectangle& operator=(const Rectangle &rh){
+        rha.x = rh.rha.x;
+        rha.y = rh.rha.y;
+
+        return *this;
+    }
 
     Rectangle operator+(Rectangle const &rh) {
-        return Rectangle(*(new Point(rha->maxx(*rh.rha).x, rha->maxy(*rh.rha).y)));
+        return Rectangle(rha.maxx(rh.rha).x, rha.maxy(rh.rha).y);
     }
 
     Rectangle operator*(Rectangle const &rh) {
-        return Rectangle(*(new Point(rha->minx(*rh.rha).x, rha->miny(*rh.rha).y)));
+        return Rectangle(rha.minx(rh.rha).x, rha.miny(rh.rha).y);
     }
 
     void print() {
-        std::cout << '(' << rha->x << ',' << rha->y << ')' << std::endl;
+        std::cout << '(' << rha.x << ',' << rha.y << ')' << std::endl;
     }
 };
-
-Rectangle *create_rect(int x, int y) {
-    return new Rectangle(*(new Point(x, y)));
-}
 
 int slice_string(std::basic_string<char> string, int begin, int *coordinates, int num, int base_condition) {
     if (num >= base_condition)
@@ -68,10 +72,10 @@ int slice_string(std::basic_string<char> string, int begin, int *coordinates, in
     }
     int point_coordinate = 0;
     for (int j = 0; j < end - begin; ++j) {
-        point_coordinate += ((int) (string[end - j - 1]) - 48) * pow(10, j);
+        point_coordinate += ((int)(string[end - j - 1]) - 48) * pow(10, j);
     }
     coordinates[num] = point_coordinate;
-    slice_string(string, ++end, coordinates, ++num, base_condition);
+    slice_string(string, end + 1, coordinates, ++num, base_condition);
 }
 
 int main() {
@@ -93,11 +97,10 @@ int main() {
             ++j;
         }
     }
-
     slice_string(expression, 0, coord, 0, 2 * (sign_num + 1));
 
-    auto *sum_stack = new std::stack<Rectangle>;
-    auto *num_stack = new std::stack<int>;
+    std::stack<Rectangle> sum_stack;
+    std::stack<int> num_stack;
     for (int i = 0; i < sign_num; ++i) {
         if (signs[i] == '*') {
             int begin = i;
@@ -105,29 +108,29 @@ int main() {
             while (signs[i] == '*') {
                 ++i;
             }
-            Rectangle rect_1 = *(create_rect(coord[2 * begin], coord[2 * begin + 1]));
-            num_stack->push(2 * begin);
+            Rectangle rect_1 = Rectangle(coord[2 * begin], coord[2 * begin + 1]);
+            num_stack.push(2 * begin);
             for (int k = ++begin; k < i + 1; ++k) {
-                Rectangle rect_2 = *(create_rect(coord[2 * k], coord[2 * k + 1]));
-                rect_1 = rect_1.operator*(rect_2);
-                num_stack->push(2 * k);
+                Rectangle rect_2 = (Rectangle(coord[2 * k], coord[2 * k + 1]));
+                rect_1 = rect_1 * rect_2;
+                num_stack.push(2 * k);
             }
-            sum_stack->push(rect_1);
+            sum_stack.push(rect_1);
         }
     }
 
-    int *num_massive = new int[num_stack->size()];
-    int num_stack_size = num_stack->size();
+    int *num_massive = new int[num_stack.size()];
+    int num_stack_size = num_stack.size();
 
     for (int i = 0; i < num_stack_size; ++i) {
-        num_massive[i] = num_stack->top();
-        num_stack->pop();
+        num_massive[i] = num_stack.top();
+        num_stack.pop();
     }
-    int sum_stack_size = sum_stack->size();
-    Rectangle answer = *(create_rect(0, 0));
+    int sum_stack_size = sum_stack.size();
+    Rectangle answer;
     for (int i = 0; i < sum_stack_size; ++i) {
-        answer = answer.operator+(sum_stack->top());
-        sum_stack->pop();
+        answer = answer + sum_stack.top();
+        sum_stack.pop();
     }
 
     for (int i = 0; i <= sign_num; ++i) {
@@ -138,14 +141,14 @@ int main() {
         }
         if (is_mul)
             continue;
-        Rectangle rect_2 = *(create_rect(coord[2 * i], coord[2 * i + 1]));
-        answer = answer.operator+(rect_2);
+        Rectangle rect_2 = (Rectangle(coord[2 * i], coord[2 * i + 1]));
+        answer = answer + rect_2;
     }
 
-    int i = 0;
-    while (expression[i] != '+' and expression[i] != '*') {
-        ++i;
-    }
+    delete[] signs;
+    delete[] coord;
 
     answer.print();
+    //(5,5) *(2, 7) + (7,7) * (2,6) * (1, 8) + (2, 4) * (3, 2)
+    //(2, 6)
 }
