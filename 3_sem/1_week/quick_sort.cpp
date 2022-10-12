@@ -23,7 +23,7 @@ void generic_swap(void *lhs, void *rhs, std::size_t element_byte_size) {
 }
 
 int list_size(void *begin, void *end, std::size_t element_byte_size) {
-    return (std::size_t(end) - std::size_t(begin)) / element_byte_size;
+    return (std::size_t(end) - std::size_t(begin)) / element_byte_size + 1;
 }
 
 bool less(void *a, void *b) {
