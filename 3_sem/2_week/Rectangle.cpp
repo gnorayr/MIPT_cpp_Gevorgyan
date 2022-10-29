@@ -3,9 +3,9 @@
 #include <stack>
 
 struct Point {
-    unsigned long long x, y;
+    int x, y;
 
-    Point(unsigned long long x, unsigned long long y) :
+    Point(int x, int y) :
             x(x), y(y) {}
 
     Point minx(Point const &rha) const {
@@ -29,7 +29,6 @@ struct Point {
     }
 };
 
-
 class Rectangle {
 private:
     Point rha;
@@ -39,13 +38,6 @@ public:
     Rectangle(const Point &rha) : rha(rha) {}
 
     Rectangle(int x, int y): Rectangle(Point(x, y)) {}
-
-    Rectangle& operator=(const Rectangle &rh){
-        rha.x = rh.rha.x;
-        rha.y = rh.rha.y;
-
-        return *this;
-    }
 
     Rectangle operator+(Rectangle const &rh) {
         return Rectangle(rha.maxx(rh.rha).x, rha.maxy(rh.rha).y);
@@ -60,9 +52,9 @@ public:
     }
 };
 
-int slice_string(std::basic_string<char> string, int begin, int *coordinates, int num, int base_condition) {
+void slice_string(std::string string, int begin, int *coordinates, int num, int base_condition) {
     if (num >= base_condition)
-        return 0;
+        return;
     while (string[begin] < '0' or string[begin] > '9') {
         ++begin;
     }
@@ -72,7 +64,7 @@ int slice_string(std::basic_string<char> string, int begin, int *coordinates, in
     }
     int point_coordinate = 0;
     for (int j = 0; j < end - begin; ++j) {
-        point_coordinate += ((int)(string[end - j - 1]) - 48) * pow(10, j);
+        point_coordinate += ((int)(string[end - j - 1]) - '0') * pow(10, j);
     }
     coordinates[num] = point_coordinate;
     slice_string(string, end + 1, coordinates, ++num, base_condition);
@@ -100,49 +92,27 @@ int main() {
     slice_string(expression, 0, coord, 0, 2 * (sign_num + 1));
 
     std::stack<Rectangle> sum_stack;
-    std::stack<int> num_stack;
-    for (int i = 0; i < sign_num; ++i) {
-        if (signs[i] == '*') {
+    std::stack<int> used_coord_stack;
+    for (int i = 0; i <= sign_num; ++i) {
+        if (i == 0 || signs[i - 1] == '+') {
             int begin = i;
-            ++i;
-            while (signs[i] == '*') {
+            while (i < sign_num and signs[i] != '+') {
                 ++i;
             }
             Rectangle rect_1 = Rectangle(coord[2 * begin], coord[2 * begin + 1]);
-            num_stack.push(2 * begin);
             for (int k = ++begin; k < i + 1; ++k) {
                 Rectangle rect_2 = (Rectangle(coord[2 * k], coord[2 * k + 1]));
                 rect_1 = rect_1 * rect_2;
-                num_stack.push(2 * k);
             }
             sum_stack.push(rect_1);
         }
     }
 
-    int *num_massive = new int[num_stack.size()];
-    int num_stack_size = num_stack.size();
-
-    for (int i = 0; i < num_stack_size; ++i) {
-        num_massive[i] = num_stack.top();
-        num_stack.pop();
-    }
     int sum_stack_size = sum_stack.size();
     Rectangle answer;
     for (int i = 0; i < sum_stack_size; ++i) {
         answer = answer + sum_stack.top();
         sum_stack.pop();
-    }
-
-    for (int i = 0; i <= sign_num; ++i) {
-        bool is_mul = false;
-        for (int k = 0; k < num_stack_size; ++k) {
-            if (num_massive[k] == 2 * i)
-                is_mul = true;
-        }
-        if (is_mul)
-            continue;
-        Rectangle rect_2 = (Rectangle(coord[2 * i], coord[2 * i + 1]));
-        answer = answer + rect_2;
     }
 
     delete[] signs;
