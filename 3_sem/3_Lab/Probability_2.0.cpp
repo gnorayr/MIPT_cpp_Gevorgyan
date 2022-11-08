@@ -7,19 +7,19 @@ std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 
 class State {
 public:
-    virtual bool contains(int s) const =0;
+    virtual bool contains(int s) const = 0;
 };
 
-class DiscreteState: public State{
-private:
-    int const state;
-
+class DiscreteState: public State {
 public:
     DiscreteState(int state): state(state) { }
 
     bool contains(int s) const {
         return s == state;
     }
+
+private:
+    int const state;
 };
 
 class SegmentState: public State{
@@ -44,40 +44,64 @@ public:
     SetState(std::set<int> const &src): states(src) { }
 
     bool contains(int s) const {
-        return states.count(s) > 0;
+        return states.count(s);
     }
 };
 
-class CombiningSets: public State {
-private:
-    State &a;
-    State &b;
+class BinaryOperationOnStates: public State {
 public:
-    CombiningSets(State &a, State &b): a(a), b(b) { }
+    BinaryOperationOnStates(const State &a, const State &b) : a(a), b(b) {}
+
+protected:
+    const State &a;
+    const State &b;
+};
+
+template<typename FirstState, typename... OtherStates>
+class CombiningStates: public State {
+public:
+    CombiningStates(const FirstState &firstArgument, const OtherStates&... otherArguments)
+            : firstState(firstArgument)
+            , otherStatesCombined(otherArguments...)
+    {}
 
     bool contains(int s) const {
-        return (a.contains(s) or b.contains(s));
+        return (firstState.contains(s) or otherStatesCombined.contains(s));
     }
+
+private:
+    FirstState firstState;
+    CombiningStates<OtherStates...> otherStatesCombined;
 };
 
-class IntersectionSets: public State {
-private:
-    State &a;
-    State &b;
+template<typename T>
+class CombiningStates<T>: public State {
 public:
-    IntersectionSets(State &a, State &b): a(a), b(b) { }
+    CombiningStates(const T &state) : state(state) {}
+
+    bool contains(int s) const {
+        return state.contains(s);
+    }
+
+private:
+    T state;
+};
+
+template<typename... T>
+using CombiningTwoStates = CombiningStates<T...>;
+
+class IntersectionSets: public BinaryOperationOnStates {
+public:
+    IntersectionSets(State &a, State &b): BinaryOperationOnStates(a, b) { }
 
     bool contains(int s) const {
         return (a.contains(s) and b.contains(s));
     }
 };
 
-class DifferenceSets: public State {
-private:
-    State &a;
-    State &b;
+class DifferenceSets: public BinaryOperationOnStates {
 public:
-    DifferenceSets(State &a, State &b): a(a), b(b) { }
+    DifferenceSets(State &a, State &b): BinaryOperationOnStates(a, b) { }
 
     bool contains(int s) const {
         return (a.contains(s) and !b.contains(s));
@@ -107,7 +131,7 @@ int main() {
     DiscreteState d(1);
     SegmentState s(0,9);
     SetState ss({1, 3, 5, 7, 23, 48, 57, 60, 90, 99});
-    CombiningSets c(s, ss);
+    CombiningStates<DiscreteState, SegmentState, SetState> c(d, s, ss);
     IntersectionSets i(s, ss);
     DifferenceSets ds(s, ss);
 
